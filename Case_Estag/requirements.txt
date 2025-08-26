@@ -1,1 +1,15 @@
+Flask==2.3.5
+Flask-Login==0.6.3
+SQLAlchemy==2.0.25
+Werkzeug==2.3.7
+pandas==2.1.1
+
+# Dependências opcionais de banco de dados:
+# Para PostgreSQL:
+psycopg2-binary==2.9.7
+# Para MySQL:
+mysqlclient==2.2.1
+
+# Para Windows: opcional, facilita a instalação do mysqlclient
+# wheel==0.41.3
 
