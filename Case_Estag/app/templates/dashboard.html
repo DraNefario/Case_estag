@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <nav>
+        <a class="logout-button" href="{{ url_for('auth.logout') }}">Sair</a>
+        <a class="button" href="{{ url_for('user_.home') }}">Voltar</a>
+    </nav>
+        <label>De: <input type="date" id="startDate"></label>
+            <label>Até: <input type="date" id="endDate"></label>
+            <label>Ordenar por:
+            <select id="orderBy">
+                <option value="date">Date</option>
+                <option value="clicks">Clicks</option>
+                <option value="account_id">Account ID</option>
+                <option value="campaign_iid">Campaign ID</option>
+                <option value="impressions">Impressions</option>
+                <option value="interactions">Interactions</option>
+                {% if current_user.has_role('admin') %}
+                <option value="cost_micros">Cost Micros</option>
+                {% endif %}
+                <option value="conversions">Conversions</option>
+            </select>
+    </label>
+    <button onclick="filterAndReset()">Filtrar</button>
+        <table id="metricsTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Account ID</th>
+                <th>Campaign ID</th>
+                <th>Clicks</th>
+                <th>Conversions</th>
+                <th>Impressions</th>
+                <th>Interactions</th>
+                {% if current_user.has_role('admin') %}
+                <th>Cost Micros</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+    <!-- Controles de paginação -->
+    <div style="margin-top: 15px;">
+        <button onclick="prevPage()">Anterior</button>
+        <span id="pageInfo"></span>
+        <button onclick="nextPage()">Próxima</button>
+    </div>
+    {% else %}
+            <nav>
+                <a href="{{ url_for('auth.inicio') }}">Login</a>
+            </nav>
+    {% endif %}
+
+  <script>
+  let currentPage = 1;
+  const pageSize = 100;
+
+  async function loadMetrics(start=null, end=null, order_by=null, page=1){
+      const params = new URLSearchParams({
+          start_date: start,
+          end_date: end,
+          order_by: order_by,
+          page: page,
+          page_size: pageSize
+      });
+      const res = await fetch(`/get_metrics?${params.toString()}`);
+      const response = await res.json();
+      const data = response.data;
+      const tbody = document.querySelector("#metricsTable tbody");
+      tbody.innerHTML = "";
+      data.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+              <td>${row.date}</td>
+              <td>${row.account_id}</td>
+              <td>${row.campaign_id}</td>
+              <td>${row.clicks}</td>
+              <td>${row.conversions}</td>
+              <td>${row.impressions}</td>
+              <td>${row.interactions}</td>
+              ${ row.cost_micros !== undefined ? `<td>${row.cost_micros}</td>` : '' }
+          `;
+          tbody.appendChild(tr);
+      });
+
+      document.getElementById("pageInfo").innerText =
+          `Página ${response.page} de ${Math.ceil(response.total / response.page_size)}`;
+  }
+
+    function applyFilter(){
+        const start = document.getElementById("startDate").value;
+        const end = document.getElementById("endDate").value;
+        const order = document.getElementById("orderBy").value;
+        loadMetrics(start, end, order, currentPage); // usa currentPage atual
+    }
+
+    function filterAndReset(){
+    currentPage = 1;
+    applyFilter();
+    }
+
+  
+
+  function nextPage(){
+      currentPage++;
+      applyFilter();
+  }
+
+  function prevPage(){
+      if(currentPage > 1){
+          currentPage--;
+          applyFilter();
+      }
+  }
+
+
+  loadMetrics();
+  </script>
+</body>
+</html>

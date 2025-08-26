@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Home</title>
+</head>
+<body>
+    <div class="container">
+        {% if current_user.is_authenticated %}
+            <div class="welcome-card">
+                <h1>Bem-vindo, {{ current_user.username }}!</h1>
+                <a class="btn logout-button" href="{{ url_for('auth.logout') }}">Sair</a>
+            </div>
+        {% else %}
+            <nav class="guest-nav">
+                <a class="btn" href="{{ url_for('auth.inicio') }}">Login</a>
+            </nav>
+        {% endif %}
+
+        <nav class="main-nav">
+            <a class="btn" href="{{ url_for('user_.dashboard') }}">Ver Métricas</a>
+        </nav>
+    </div>
+</body>
+</html>
