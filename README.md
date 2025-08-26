@@ -30,7 +30,7 @@ Sistema web em Flask para gerenciamento de usuários e métricas, com autentica�
 1. Clone o repositório:  
 ```bash
 git clone <https://github.com/DraNefario/Case_estag>
-cd <Case_estag>
+cd <Case_Estag>
 ```
 
 2.Crie e ative um ambiente virtual (opcional, mas recomendado):
