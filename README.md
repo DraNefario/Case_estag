@@ -78,10 +78,12 @@ Case_Estag/
 ├─ app/
 │  ├─ controllers/      # Lógica de rotas
 │  ├─ models/           # Modelos de banco de dados
-│  ├─ statiic/          # CSS
+│  ├─ static/           # CSS, JS, imagens
 │  ├─ templates/        # HTML
 │  ├─ utils/            # Funções utilitárias (decorators, criação de DB)
 │  └─ __init__.py       # Cria a aplicação Flask
+├─ data/                # Dados para o banco de dados
+├─ requirements.txt     # Dependências do projeto
 └─ run.py               # Arquivo principal para rodar a aplicação
 ```
 
